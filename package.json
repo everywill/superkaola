@@ -1,0 +1,22 @@
+{
+  "name": "kaola-superman",
+  "version": "0.0.1",
+  "description": "a bundle cli for kaola front-end projects",
+  "main": "index.js",
+  "bin": {
+    "kaola-superman": "./index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:everywill/kaola-superman.git"
+  },
+  "keywords": [
+    "bundle",
+    "cli"
+  ],
+  "author": "everywill",
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^2.15.0"
+  }
+}
