@@ -17,6 +17,10 @@
   "author": "everywill",
   "license": "ISC",
   "dependencies": {
-    "commander": "^2.15.0"
+    "chalk": "^2.3.2",
+    "commander": "^2.15.0",
+    "happypack": "^4.0.1",
+    "rimraf": "^2.6.2",
+    "webpack": "^2.7.0"
   }
 }
