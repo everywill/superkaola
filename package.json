@@ -1,14 +1,14 @@
 {
-  "name": "kaola-superman",
+  "name": "superkaola",
   "version": "0.0.1",
-  "description": "a bundle cli for kaola front-end projects",
+  "description": "Super bundler for kaola front-end project.",
   "main": "index.js",
   "bin": {
-    "kaola-superman": "./index.js"
+    "superkaola": "./index.js"
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:everywill/kaola-superman.git"
+    "url": "git@github.com:everywill/superkaola.git"
   },
   "keywords": [
     "bundle",
