@@ -4,8 +4,6 @@ const checkProConf = require('../lib/build/check-project-config');
 const cs = require('../lib/console');
 const conf = require('../lib/config');
 
-cs.buildLog(`开始打包：${process.env.NODE_ENV === 'production' ? '发布' : '开发'}模式`, 'info');
-
 const envMap = {
     dev: 'development',
     prd: 'production'
@@ -24,11 +22,7 @@ const build = (type, options) => {
 
     if (!checkProConf(buildConf)) helper.stop(true);
 
-    const { entry } = options;
-
-    if (entry) {
-        buildConf.entry = entry;
-    }
+    cs.buildLog(`开始打包：${process.SUPERKAOLA_ENV === 'development' ? '开发' : '发布'}模式`, 'info');
 
     const dllPromise = new Promise((resolve) => {
         if (process.env.npm_config_rebuild_dll) {
@@ -45,4 +39,4 @@ const build = (type, options) => {
     })
 }
 
-build()
+module.exports = build

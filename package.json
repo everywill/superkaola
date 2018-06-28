@@ -19,8 +19,8 @@
   "dependencies": {
     "chalk": "^2.3.2",
     "commander": "^2.15.0",
-    "happypack": "^4.0.1",
+    "happypack": "^5.0.0",
     "rimraf": "^2.6.2",
-    "webpack": "^2.7.0"
+    "webpack": "^4.8.3"
   }
 }
