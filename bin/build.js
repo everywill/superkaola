@@ -12,8 +12,8 @@ const envMap = {
 const build = (type, options) => {
     type = type || 'dev'
 
-    process.SUPERKAOLA_ENV = envMap[type]
-    process.SUPERMAN_ROOT = path.resolve(__dirname, '..')
+    process.env.SUPERKAOLA_ENV = envMap[type]
+    process.env.SUPERKAOLA_ROOT = path.resolve(__dirname, '..')
 
     let buildConf = helper.findConfig(
         path.resolve(conf.root, `./${conf.CONF_FILE_NAME}`),
@@ -22,7 +22,7 @@ const build = (type, options) => {
 
     if (!checkProConf(buildConf)) helper.stop(true);
 
-    cs.buildLog(`开始打包：${process.SUPERKAOLA_ENV === 'development' ? '开发' : '发布'}模式`, 'info');
+    cs.buildLog(`开始打包：${process.env.SUPERKAOLA_ENV === 'development' ? '开发' : '发布'}模式`, 'info');
 
     const dllPromise = new Promise((resolve) => {
         if (process.env.npm_config_rebuild_dll) {

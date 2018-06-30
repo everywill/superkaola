@@ -2,10 +2,10 @@ const path = require('path');
 const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
-const PROD = process.env.NODE_ENV === 'production';
+const PROD = process.env.SUPERKAOLA_ENV === 'production';
 
 function resolve(file) {
-    return path.join(__dirname, '../../..', file);
+    return path.join(process.env.SUPERKAOLA_ROOT, file);
 }
 
 module.exports = {
