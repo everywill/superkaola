@@ -6,27 +6,28 @@ const conf = require('../lib/config');
 
 const envMap = {
     dev: 'development',
-    prd: 'production'
+    prd: 'production',
+    analyze: 'production'
 }
 
-const build = (type, options) => {
+const build = (type, statsDir) => {
     type = type || 'dev'
 
     process.env.SUPERKAOLA_ENV = envMap[type]
     process.env.SUPERKAOLA_ROOT = path.resolve(__dirname, '..')
 
-    let buildConf = helper.findConfig(
+    let proBuildInfo = helper.findConfig(
         path.resolve(conf.root, `./${conf.CONF_FILE_NAME}`),
         'build'
     )
 
-    if (!checkProConf(buildConf)) helper.stop(true);
+    if (!checkProConf(proBuildInfo)) helper.stop(true);
 
     cs.buildLog(`开始打包：${process.env.SUPERKAOLA_ENV === 'development' ? '开发' : '发布'}模式`, 'info');
 
     const dllPromise = new Promise((resolve) => {
         if (process.env.npm_config_rebuild_dll) {
-            buildDLL(() => {
+            buildDLL(proBuildInfo, statsDir, () => {
                 resolve(true);
             });
         } else {
@@ -34,8 +35,8 @@ const build = (type, options) => {
         }
     })
 
-    dllPromise.then(() => {
-        buildBusiness();
+    dllPromise.then((needDll) => {
+        buildBusiness(proBuildInfo, needDll, statsDir);
     })
 }
 

@@ -19,10 +19,8 @@ function resolve(file) {
 
 module.exports = {
     mode: process.env.SUPERKAOLA_ENV,
-    // devtool: false,
-    entry: {
-        app: resolve('src/app/main.js')
-    },
+    // 占位
+    entry: {},
     output: {
         publicPath: PROD ? '/public/' : '/',
         path: PROD ? resolve('../server/app/public') : resolve('local'),
