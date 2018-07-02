@@ -1,2 +1,2 @@
 # kaola-superman
-Super bundler for kaola front-end project.
+Bundler for kaola front-end project.

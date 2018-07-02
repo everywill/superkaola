@@ -23,7 +23,7 @@ const build = (type, statsDir) => {
 
     if (!checkProConf(proBuildInfo)) helper.stop(true);
 
-    cs.buildLog(`开始打包：${process.env.SUPERKAOLA_ENV === 'development' ? '开发' : '发布'}模式`, 'info');
+    cs.buildLog(`Building：${process.env.SUPERKAOLA_ENV} mode`, 'info');
 
     const dllPromise = new Promise((resolve) => {
         if (process.env.npm_config_rebuild_dll) {

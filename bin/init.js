@@ -7,7 +7,7 @@ function init() {
   })
 
   process.on('uncaughtException', () => {
-    console.log(chalk.magenta('请先安装yeoman: '));
+    console.log(chalk.magenta('Please install yeoman first: '));
     console.log(chalk.bgWhite.magenta('npm install -g yo'));
   })
 }

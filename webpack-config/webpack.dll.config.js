@@ -1,6 +1,7 @@
-const path = require('path');
-const webpack = require('webpack');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const path = require('path')
+const webpack = require('webpack')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const getBaseConfig = require('./webpack.base.config')
 
 const PROD = process.env.SUPERKAOLA_ENV === 'production';
 
@@ -8,52 +9,18 @@ function resolve(file) {
     return path.join(process.env.SUPERKAOLA_ROOT, file);
 }
 
-module.exports = {
-    mode: 'production',
-    entry: {
-        base: [
-            'vue',
-            'vue-router',
-            'echarts',
-            'v-charts',
-            'qs',
-            'axios',
-            'element-ui',
-            'element-ui/lib/theme-chalk/index.css',
-            resolve('src/common/style/index.css')
-        ]
-    },
-    module: {
-        rules: [
-            {
-                test: /\.css$/,
-                use: [
-                    MiniCssExtractPlugin.loader,
-                    'css-loader'
-                ]
-            },
-            {
-                test: /\.(woff2?|eot|ttf|otf|png|svg)(\?.*)?$/,
-                loader: 'url-loader',
-                options: {
-                    limit: 50000
-                }
-            }
-        ]
-    },
-    resolve: {
-        extensions: ['.js', '.vue', '.json'],
-        alias: {
-            vue$: 'vue/dist/vue.esm.js',
-            '@': resolve('src')
+const getWebpackConfig = (buildInfo) => {
+    const baseConfig = getBaseConfig(buildInfo)
+    const config = Object.assign({}, baseConfig, {
+        mode: 'production',
+        output: {
+            path: baseConfig.output.path,
+            filename: PROD ? '[name]_[chunkhash].dll.js' : '[name].dll.js',
+            library: PROD ? '[name]_[chunkhash]' : '[name]'
         }
-    },
-    output: {
-        path: PROD ? resolve('../server/app/public') : resolve('local'),
-        filename: PROD ? '[name]_[chunkhash].dll.js' : '[name].dll.js',
-        library: PROD ? '[name]_[chunkhash]' : '[name]'
-    },
-    plugins: [
+    })
+
+    config.plugins = config.plugins.concat([
         new webpack.DllPlugin({
             context: path.join(resolve('node_modules'), '.super-kaola'),
             path: path.join(resolve('node_modules'), '.super-kaola', '[name]-manifest.json'),
@@ -63,5 +30,15 @@ module.exports = {
             filename: PROD ? '[name]_[contenthash].dll.css' : '[name].dll.css',
             chunkFilename: PROD ? '[id]_[contenthash].dll.css' : '[id].dll.css'
         })
-    ]
-};
+    ])
+
+    try {
+        config.entry = require(path.join(info.root, buildInfo.commonModule)); // eslint-disable-line
+    } catch (ex) {
+        cs.log(ex);
+        cs.log('Please check dllModules in superman.json', 'error');
+        helper.stop(true);
+    }
+}
+
+module.exports = getWebpackConfig
