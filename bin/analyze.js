@@ -6,7 +6,7 @@ const build = require('./build');
 const analyze = (filePath) => {
     filePath = filePath || config.statsDir
     if (typeof filePath !== 'string') {
-        cs.log('File path of stats must be String', 'error');
+        cs.log('File path must be String', 'error');
         helper.stop(true);
     }
 

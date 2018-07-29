@@ -7,9 +7,7 @@ const upgrade = require('./bin/upgrade')
 const cs = require('./lib/console')
 
 const buildAction = type => {
-  return options => {
-    build(type, options)
-  }
+    build(type)
 }
 
 program

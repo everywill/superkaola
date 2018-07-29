@@ -1,21 +1,23 @@
-const path = require('path');
-const webpack = require('webpack');
-const os = require('os');
-const HappyPack = require('happypack');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin');
-const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const path = require('path')
+const webpack = require('webpack')
+const os = require('os')
+const HappyPack = require('happypack')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin')
+const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
-const PROD = process.env.SUPERKAOLA_ENV === 'production';
+const PROD = process.env.SUPERKAOLA_ENV === 'production'
 
 const happyThreadPool = HappyPack.ThreadPool({
     size: os.cpus().length
 });
 
 function resolve(file) {
-    return path.join(process.env.SUPERKAOLA_ROOT, file);
+    return path.join(process.env.SUPERKAOLA_ROOT, file)
 }
+
+const getBaseConfig = (buildInfo) => {}
 
 module.exports = {
     mode: process.env.SUPERKAOLA_ENV,
