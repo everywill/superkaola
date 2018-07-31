@@ -1,12 +1,12 @@
-const merge = require('webpack-merge');
-const baseWebpackConfig = require('./webpack.base.config');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const merge = require('webpack-merge')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
+const baseWebpackConfig = require('./webpack.base.config')
 
-let webpackConfig = merge(baseWebpackConfig, {
+const webpackConfig = merge(baseWebpackConfig, {
     module: {
         rules: [
-        ]
+        ],
     },
     plugins: [
     ],
@@ -14,15 +14,15 @@ let webpackConfig = merge(baseWebpackConfig, {
         minimizer: [
             new UglifyJsPlugin({
                 cache: true,
-                parallel: true
+                parallel: true,
             }),
-            new OptimizeCSSAssetsPlugin({})
-        ]
-    }
+            new OptimizeCSSAssetsPlugin({}),
+        ],
+    },
 });
 
 if (process.env.npm_config_report) {
-    const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+    const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
     webpackConfig.plugins.push(new BundleAnalyzerPlugin());
 }
 

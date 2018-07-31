@@ -1,24 +1,26 @@
-const buildDLL = require('../lib/build/build-dll');
-const buildBusiness = require('../lib/build/build-business');
-const checkProConf = require('../lib/build/check-project-config');
-const cs = require('../lib/console');
-const conf = require('../lib/config');
+const path = require('path')
+const buildDLL = require('../lib/build/build-dll')
+const buildBusiness = require('../lib/build/build-business')
+const checkProConf = require('../lib/build/check-project-config')
+const cs = require('../lib/console')
+const conf = require('../lib/config')
+const helper = require('../lib/helper')
 
 const envMap = {
     dev: 'development',
     prd: 'production',
-    analyze: 'production'
+    analyze: 'production',
 }
 
 const build = (type, statsDir) => {
-    type = type || 'dev'
+    type = type || 'dev' // eslint-disable-line
 
     process.env.SUPERKAOLA_ENV = envMap[type]
     process.env.SUPERKAOLA_ROOT = path.resolve(__dirname, '..')
 
-    let proBuildInfo = helper.findConfig(
+    const proBuildInfo = helper.findConfig(
         path.resolve(conf.root, `./${conf.CONF_FILE_NAME}`),
-        'build'
+        'build',
     )
 
     if (!checkProConf(proBuildInfo)) helper.stop(true);

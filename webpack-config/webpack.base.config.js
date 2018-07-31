@@ -1,5 +1,6 @@
 const path = require('path')
 const os = require('os')
+const fs = require('fs')
 const _ = require('lodash')
 const webpack = require('webpack')
 const babelMerge = require('babel-merge')
@@ -8,16 +9,15 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
-const cs = require('../lib/console')
 
 const PROD = process.env.SUPERKAOLA_ENV === 'production'
 
 const happyThreadPool = HappyPack.ThreadPool({
-    size: os.cpus().length
+    size: os.cpus().length,
 });
 
 function requireJSON(filepath) {
-    const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    const data = JSON.parse(fs.readFileSync(filepath, 'utf8'));
     return data
 }
 
@@ -32,7 +32,6 @@ function getEnvConf(buildInfo) {
     let outputPath
     let filename
     let chunkFilename
-    let publicPath
 
     if (PROD) {
         cssDist = `${path.relative(jsBuild, cssBuild)}/[name]_[contenthash].css`
@@ -52,8 +51,8 @@ function getEnvConf(buildInfo) {
             path: outputPath,
             publicPath,
             filename,
-            chunkFilename
-        }
+            chunkFilename,
+        },
     }
 }
 
@@ -79,14 +78,14 @@ const getBaseConfig = (buildInfo) => {
             extensions: ['.js', '.vue', '.json'],
             alias: buildInfo.resolveAlias || {
                 vue$: 'vue/dist/vue.esm.js',
-                '@': path.join(buildInfo.root, 'src')
-            }
+                '@': path.join(buildInfo.root, 'src'),
+            },
         },
         module: {
             rules: [
                 {
                     test: /\.vue$/,
-                    loader: 'vue-loader'
+                    loader: 'vue-loader',
                 },
                 {
                     test: /\.js$/,
@@ -94,43 +93,43 @@ const getBaseConfig = (buildInfo) => {
                     exclude: file => (
                         /node_modules/.test(file) &&
                         !/\.vue\.js/.test(file)
-                    )
+                    ),
                 },
                 {
                     test: /\.(sa|sc|c)ss$/,
                     use: [
                         MiniCssExtractPlugin.loader,
                         'css-loader',
-                        'sass-loader'
-                    ]
+                        'sass-loader',
+                    ],
                 },
                 {
                     test: /\.(woff2?|eot|ttf|otf|png|gif|jpeg|jpg|svg)(\?.*)?$/,
                     loader: 'url-loader',
                     options: {
-                        limit: 10000
-                    }
-                }
-            ]
+                        limit: 10000,
+                    },
+                },
+            ],
         },
         plugins: [
             new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
             new VueLoaderPlugin(),
             new webpack.DllReferencePlugin({
                 context: path.join(buildInfo.root, 'node_modules', '.super-kaola'),
-                manifest: require(path.join(buildInfo, 'node_modules', '.super-kaola', 'base-manifest.json'))
+                manifest: require(path.join(buildInfo, 'node_modules', '.super-kaola', 'base-manifest.json')),
             }),
             new HappyPack({
                 id: 'babel',
                 threadPool: happyThreadPool,
                 loaders: [{
                     loader: 'babel-loader',
-                    options: babelMerge(commonBabelConf, proBabelConf)
-                }]
+                    options: babelMerge(commonBabelConf, proBabelConf),
+                }],
             }),
             new MiniCssExtractPlugin({
                 filename: PROD ? '[name]_[contenthash].css' : '[name].css',
-                chunkFilename: PROD ? '[id]_[contenthash].css' : '[id].css'
+                chunkFilename: PROD ? '[id]_[contenthash].css' : '[id].css',
             }),
             new HtmlWebpackPlugin({
                 filename: PROD ? path.join(buildInfo.root, buildInfo.outputHtmlPath, 'index.html') : 'index.html',
@@ -139,22 +138,22 @@ const getBaseConfig = (buildInfo) => {
                 minify: {
                     removeComments: true,
                     collapseWhitespace: true,
-                    removeAttributeQuotes: true
+                    removeAttributeQuotes: true,
                     // more options:
                     // https://github.com/kangax/html-minifier#options-quick-reference
                 },
                 // necessary to consistently work with multiple chunks via CommonsChunkPlugin
-                chunksSortMode: 'dependency'
+                chunksSortMode: 'dependency',
             }),
             new AddAssetHtmlPlugin([{
                 filepath: path.resolve(buildInfo.root, PROD ? envConf.output.outputPath : 'local', '*.dll.js'),
-                includeSourcemap: false
+                includeSourcemap: false,
             }, {
                 filepath: path.resolve(buildInfo.root, PROD ? envConf.output.outputPath : 'local', '*.dll.css'),
                 includeSourcemap: false,
-                typeOfAsset: 'css'
+                typeOfAsset: 'css',
             }]),
-            new ProgressPlugin((percentage, msg) => {
+            new webpack.ProgressPlugin((percentage, msg) => {
                 if (percentage < 1) {
                     percentage = Math.floor(percentage * 100);
                     msg = ` ${percentage}% ${msg}`;
@@ -164,7 +163,7 @@ const getBaseConfig = (buildInfo) => {
                     process.stdout.cursorTo(0);
                     process.stdout.write(msg);
                 }
-            })
+            }),
         ],
         optimization: {
             runtimeChunk: 'single',
@@ -173,11 +172,11 @@ const getBaseConfig = (buildInfo) => {
                 name: true,
                 cacheGroup: {
                     vendors: {
-                        test: /[\\/]node_modules[\\/]/
-                    }
-                }
-            }
-        }
+                        test: /[\\/]node_modules[\\/]/,
+                    },
+                },
+            },
+        },
     }
 
     return config

@@ -1,7 +1,9 @@
-const cs = require('../lib/console');
-const helper = require('../lib/helper');
-const config = require('../lib/config');
-const build = require('./build');
+const fs = require('fs')
+const path = require('path')
+const cs = require('../lib/console')
+const helper = require('../lib/helper')
+const config = require('../lib/config')
+const build = require('./build')
 
 const analyze = (filePath) => {
     filePath = filePath || config.statsDir
