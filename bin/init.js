@@ -1,15 +1,11 @@
-const spawn = require('child_process').spawn
 const chalk = require('chalk')
+const yeoman = require('yeoman-environment')
+
 
 function init() {
-  spawn('yo', ['superkaola'], {
-    stdio: 'inherit'
-  })
-
-  process.on('uncaughtException', () => {
-    console.log(chalk.magenta('Please install yeoman first: '));
-    console.log(chalk.bgWhite.magenta('npm install -g yo'));
-  })
+    const env = yeoman.createEnv()
+    env.register(require.resolve('generator-superkaola'), 'npm:superkaola')
+    env.run('npm:superkaola')
 }
 
 module.exports = init
