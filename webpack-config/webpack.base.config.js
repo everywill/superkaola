@@ -1,13 +1,14 @@
 const path = require('path')
-const _ = require('lodash');
-const webpack = require('webpack')
 const os = require('os')
+const _ = require('lodash')
+const webpack = require('webpack')
+const babelMerge = require('babel-merge')
 const HappyPack = require('happypack')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
-const conf = require('../lib/config')
+const cs = require('../lib/console')
 
 const PROD = process.env.SUPERKAOLA_ENV === 'production'
 
@@ -15,8 +16,9 @@ const happyThreadPool = HappyPack.ThreadPool({
     size: os.cpus().length
 });
 
-function resolve(file) {
-    return path.join(process.env.SUPERKAOLA_ROOT, file)
+function requireJSON(filepath) {
+    const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    return data
 }
 
 function getEnvConf(buildInfo) {
@@ -55,8 +57,18 @@ function getEnvConf(buildInfo) {
     }
 }
 
+function getProBabelConf(buildInfo) {
+    let proBabelConf = {};
+    if (buildInfo.extra.babelrc) {
+        proBabelConf = requireJSON(path.join(buildInfo.root, buildInfo.extra.babelrc))
+    }
+    return proBabelConf
+}
+
 const getBaseConfig = (buildInfo) => {
-    const envConf = getEnvConf(buildInfo);
+    const envConf = getEnvConf(buildInfo)
+    const proBabelConf = getProBabelConf(buildInfo)
+    const commonBabelConf = buildInfo.babelConf
 
     const config = {
         mode: process.env.SUPERKAOLA_ENV,
@@ -67,7 +79,7 @@ const getBaseConfig = (buildInfo) => {
             extensions: ['.js', '.vue', '.json'],
             alias: buildInfo.resolveAlias || {
                 vue$: 'vue/dist/vue.esm.js',
-                '@': resolve('src')
+                '@': path.join(buildInfo.root, 'src')
             }
         },
         module: {
@@ -79,9 +91,6 @@ const getBaseConfig = (buildInfo) => {
                 {
                     test: /\.js$/,
                     loader: 'happypack/loader?id=babel',
-                    include: [
-                        resolve('src')
-                    ],
                     exclude: file => (
                         /node_modules/.test(file) &&
                         !/\.vue\.js/.test(file)
@@ -105,25 +114,27 @@ const getBaseConfig = (buildInfo) => {
             ]
         },
         plugins: [
+            new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
             new VueLoaderPlugin(),
+            new webpack.DllReferencePlugin({
+                context: path.join(buildInfo.root, 'node_modules', '.super-kaola'),
+                manifest: require(path.join(buildInfo, 'node_modules', '.super-kaola', 'base-manifest.json'))
+            }),
             new HappyPack({
                 id: 'babel',
                 threadPool: happyThreadPool,
                 loaders: [{
-                    loader: 'babel-loader'
+                    loader: 'babel-loader',
+                    options: babelMerge(commonBabelConf, proBabelConf)
                 }]
             }),
             new MiniCssExtractPlugin({
                 filename: PROD ? '[name]_[contenthash].css' : '[name].css',
                 chunkFilename: PROD ? '[id]_[contenthash].css' : '[id].css'
             }),
-            new webpack.DllReferencePlugin({
-                context: path.join(resolve('node_modules'), '.super-kaola'),
-                manifest: require(path.join(resolve('node_modules'), '.super-kaola', 'base-manifest.json'))
-            }),
             new HtmlWebpackPlugin({
-                filename: PROD ? resolve('../server/app/view/index.html') : 'index.html',
-                template: path.join(__dirname, '../..', 'index.html'),
+                filename: PROD ? path.join(buildInfo.root, buildInfo.outputHtmlPath, 'index.html') : 'index.html',
+                template: path.join(buildInfo.root, buildInfo.templateHtmlPath, 'index.html'),
                 inject: true,
                 minify: {
                     removeComments: true,
@@ -136,14 +147,37 @@ const getBaseConfig = (buildInfo) => {
                 chunksSortMode: 'dependency'
             }),
             new AddAssetHtmlPlugin([{
-                filepath: path.resolve(PROD ? resolve('../server/app/public') : resolve('local'), '*.dll.js'),
+                filepath: path.resolve(buildInfo.root, PROD ? envConf.output.outputPath : 'local', '*.dll.js'),
                 includeSourcemap: false
             }, {
-                filepath: path.resolve(PROD ? resolve('../server/app/public') : resolve('local'), '*.dll.css'),
+                filepath: path.resolve(buildInfo.root, PROD ? envConf.output.outputPath : 'local', '*.dll.css'),
                 includeSourcemap: false,
                 typeOfAsset: 'css'
-            }])
-        ]
+            }]),
+            new ProgressPlugin((percentage, msg) => {
+                if (percentage < 1) {
+                    percentage = Math.floor(percentage * 100);
+                    msg = ` ${percentage}% ${msg}`;
+                }
+                if (process.stdin.isTTY) {
+                    process.stdout.clearLine();
+                    process.stdout.cursorTo(0);
+                    process.stdout.write(msg);
+                }
+            })
+        ],
+        optimization: {
+            runtimeChunk: 'single',
+            splitChunks: {
+                chunk: 'all',
+                name: true,
+                cacheGroup: {
+                    vendors: {
+                        test: /[\\/]node_modules[\\/]/
+                    }
+                }
+            }
+        }
     }
 
     return config
