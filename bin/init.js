@@ -1,9 +1,12 @@
 const yeoman = require('yeoman-environment')
+const cs = require('../lib/console')
 
 function init() {
+    cs.log('Configuring superkaola ...', 'info')
     const env = yeoman.createEnv()
-    env.register(require.resolve('generator-superkaola'), 'npm:superkaola')
-    env.run('npm:superkaola')
+    env.lookup(() => {
+        env.run('superkaola');
+    });
 }
 
 module.exports = init
