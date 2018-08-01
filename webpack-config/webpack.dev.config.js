@@ -1,23 +1,26 @@
-const webpack = require('webpack');
-const merge = require('webpack-merge');
-const baseWebpackConfig = require('./webpack.base.config');
+const webpack = require('webpack')
+const merge = require('webpack-merge')
+const getBaseConfig = require('./webpack.base.config')
 const config = require('../lib/config')
 
-Object.keys(baseWebpackConfig.entry).forEach((name) => {
-    baseWebpackConfig.entry[name] = [`webpack-hot-middleware/client?path=/${config.HMR_PATH}&quiet=true`].concat(baseWebpackConfig.entry[name]);
-})
-
-module.exports = merge(baseWebpackConfig, {
-    watch: true,
-    module: {
-        rules: [
+const getWebpackConfig = (buildInfo) => {
+    const baseConfig = getBaseConfig(buildInfo)
+    const wbpConfig = merge.strategy({})(baseConfig, {
+        watch: true,
+        module: {
+            rules: [
+            ],
+        },
+        plugins: [
+            new webpack.HotModuleReplacementPlugin(),
         ],
-    },
-    plugins: [
-        new webpack.HotModuleReplacementPlugin(),
-    ],
-})
+    })
 
-const getWebpackConfig = (buildInfo) => {}
+    Object.keys(wbpConfig.entry).forEach((name) => {
+        wbpConfig.entry[name] = [`webpack-hot-middleware/client?path=/${config.HMR_PATH}&quiet=true`].concat(wbpConfig.entry[name]);
+    })
+
+    return wbpConfig
+}
 
 module.exports = getWebpackConfig

@@ -41,6 +41,8 @@ const getWebpackConfig = (buildInfo) => {
         cs.log('Please check dllModules in superman.json', 'error');
         helper.stop(true);
     }
+
+    return config
 }
 
 module.exports = getWebpackConfig
