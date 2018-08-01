@@ -6,6 +6,9 @@
   "bin": {
     "superkaola": "./index.js"
   },
+  "scripts": {
+    "postversion": "git push && git push --tags"
+  },
   "repository": {
     "type": "git",
     "url": "git@github.com:everywill/superkaola.git"
