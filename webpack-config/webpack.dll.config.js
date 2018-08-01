@@ -35,7 +35,7 @@ const getWebpackConfig = (buildInfo) => {
     ])
 
     try {
-        config.entry = require(path.join(info.root, buildInfo.dllModule)); // eslint-disable-line
+        config.entry = require(path.join(info.root, buildInfo.extra.dllModules)); // eslint-disable-line
     } catch (ex) {
         cs.log(ex);
         cs.log('Please check dllModules in superman.json', 'error');

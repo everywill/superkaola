@@ -5,7 +5,7 @@ const config = require('../lib/config')
 
 Object.keys(baseWebpackConfig.entry).forEach((name) => {
     baseWebpackConfig.entry[name] = [`webpack-hot-middleware/client?path=/${config.HMR_PATH}&quiet=true`].concat(baseWebpackConfig.entry[name]);
-});
+})
 
 module.exports = merge(baseWebpackConfig, {
     watch: true,
@@ -16,4 +16,8 @@ module.exports = merge(baseWebpackConfig, {
     plugins: [
         new webpack.HotModuleReplacementPlugin(),
     ],
-});
+})
+
+const getWebpackConfig = (buildInfo) => {}
+
+module.exports = getWebpackConfig

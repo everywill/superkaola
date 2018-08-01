@@ -28,7 +28,7 @@ const build = (type, statsDir) => {
     cs.buildLog(`Building：${process.env.SUPERKAOLA_ENV} mode`, 'info');
 
     const dllPromise = new Promise((resolve) => {
-        if (process.env.npm_config_rebuild_dll) {
+        if (proBuildInfo.extra && proBuildInfo.extra.dllModules) {
             buildDLL(proBuildInfo, statsDir, () => {
                 resolve(true);
             });
