@@ -115,10 +115,6 @@ const getBaseConfig = (buildInfo) => {
         plugins: [
             new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
             new VueLoaderPlugin(),
-            new webpack.DllReferencePlugin({
-                context: path.join(buildInfo.root, 'node_modules', '.super-kaola'),
-                manifest: require(path.join(buildInfo, 'node_modules', '.super-kaola', 'base-manifest.json')),
-            }),
             new HappyPack({
                 id: 'babel',
                 threadPool: happyThreadPool,
@@ -177,6 +173,13 @@ const getBaseConfig = (buildInfo) => {
                 },
             },
         },
+    }
+
+    if (buildInfo.needDll) {
+        config.plugins.push(new webpack.DllReferencePlugin({
+            context: path.join(buildInfo.root, 'node_modules', '.super-kaola'),
+            manifest: require(path.join(buildInfo, 'node_modules', '.super-kaola', 'base-manifest.json')),
+        }))
     }
 
     return config
