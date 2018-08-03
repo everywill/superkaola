@@ -7,10 +7,6 @@ const helper = require('../lib/helper')
 
 const PROD = process.env.SUPERKAOLA_ENV === 'production';
 
-function resolve(file) {
-    return path.join(process.env.SUPERKAOLA_ROOT, file);
-}
-
 const getWebpackConfig = (buildInfo) => {
     const baseConfig = getBaseConfig(buildInfo)
     const config = Object.assign({}, baseConfig, {
@@ -24,8 +20,8 @@ const getWebpackConfig = (buildInfo) => {
 
     config.plugins = config.plugins.concat([
         new webpack.DllPlugin({
-            context: path.join(resolve('node_modules'), '.super-kaola'),
-            path: path.join(resolve('node_modules'), '.super-kaola', '[name]-manifest.json'),
+            context: path.join(buildInfo.root, 'node_modules', '.super-kaola'),
+            path: path.join(buildInfo.root, 'node_modules', '.super-kaola', '[name]-manifest.json'),
             name: PROD ? '[name]_[chunkhash]' : '[name]',
         }),
         new MiniCssExtractPlugin({
@@ -35,7 +31,7 @@ const getWebpackConfig = (buildInfo) => {
     ])
 
     try {
-        config.entry = require(path.join(info.root, buildInfo.extra.dllModules)); // eslint-disable-line
+        config.entry = require(path.join(buildInfo.root, buildInfo.extra.dllModules)); // eslint-disable-line
     } catch (ex) {
         cs.log(ex);
         cs.log('Please check dllModules in superman.json', 'error');
