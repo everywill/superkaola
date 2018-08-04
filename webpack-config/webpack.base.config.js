@@ -208,7 +208,7 @@ const getBaseConfig = (buildInfo) => {
                 id: 'babel',
                 threadPool: happyThreadPool,
                 loaders: [{
-                    loader: 'babel-loader',
+                    loader: require.resolve('babel-loader'),
                     options: babelMerge(commonBabelConf, proBabelConf),
                 }],
             }),
