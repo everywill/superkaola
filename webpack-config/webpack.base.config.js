@@ -253,9 +253,9 @@ const getBaseConfig = (buildInfo) => {
         optimization: {
             runtimeChunk: 'single',
             splitChunks: {
-                chunk: 'all',
+                chunks: 'all',
                 name: true,
-                cacheGroup: {
+                cacheGroups: {
                     vendors: {
                         test: /[\\/]node_modules[\\/]/,
                     },
