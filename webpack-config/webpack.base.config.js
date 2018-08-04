@@ -2,6 +2,7 @@ const path = require('path')
 const os = require('os')
 const fs = require('fs')
 const _ = require('lodash')
+const glob = require('glob')
 const webpack = require('webpack')
 const babelMerge = require('babel-merge')
 const HappyPack = require('happypack')
@@ -9,6 +10,8 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
+
+const cs = require('../lib/console')
 
 const PROD = process.env.SUPERKAOLA_ENV === 'production'
 
@@ -64,15 +67,93 @@ function getProBabelConf(buildInfo) {
     return proBabelConf
 }
 
+function scanJs(entry) {
+    const files = glob.sync('/**/main.js*', {
+        root: entry,
+        ignore: [
+            '/**/bower_components/**',
+            '/**/node_modules/**',
+            '/**/components/**',
+        ],
+    })
+
+    return files
+}
+
+function getJsEntry(buildInfo) {
+    const jsEntry = {}
+    let jsSrc = _.get(buildInfo, 'js.src', '')
+
+    if (!jsSrc) {
+        return jsEntry
+    }
+
+    jsSrc = path.join(buildInfo.root, jsSrc)
+
+    scanJs(jsSrc).forEach((item) => {
+        let p = path.relative(jsSrc, path.resolve(item, '..'))
+        p = p || 'app'
+        jsEntry[p] = [`./${path.relative(process.cwd(), item)}`]
+    })
+
+    return jsEntry
+}
+
+function scanCss(entry) {
+    const files = glob.sync('/**/*.scss', {
+        root: entry,
+        ignore: [
+            '/**/_*',
+            '/**/bower_components/**',
+            '/**/node_modules/**',
+        ],
+    })
+
+    return files;
+}
+
+function getCssEntry(buildInfo) {
+    const cssEntry = {}
+    let cssSrc = _.get(buildInfo, 'css.src', '')
+
+    if (!cssSrc) {
+        return cssEntry
+    }
+
+    cssSrc = path.join(buildInfo.root, cssSrc)
+
+    let p
+    scanCss(cssSrc).forEach((item) => {
+        p = path.relative(cssSrc, item);
+        p = p.slice(0, p.lastIndexOf('.'));
+        p = p || 'app';
+        cssEntry[p] = `./${path.relative(process.cwd(), item)}`;
+    })
+
+    return cssEntry
+}
+
+function getCommonEntry(buildInfo) {
+    const entry = {};
+
+    cs.log('Scanning entry files...', 'info')
+
+    const jsEntry = getJsEntry(buildInfo)
+    const cssEntry = getCssEntry(buildInfo)
+
+    return Object.assign(entry, jsEntry, cssEntry)
+}
+
 const getBaseConfig = (buildInfo) => {
     const envConf = getEnvConf(buildInfo)
     const proBabelConf = getProBabelConf(buildInfo)
     const commonBabelConf = buildInfo.babelConf
+    const commonEntry = getCommonEntry(buildInfo)
 
     const config = {
         mode: process.env.SUPERKAOLA_ENV,
         // 占位
-        entry: {},
+        entry: commonEntry,
         output: envConf.output,
         resolve: {
             extensions: ['.js', '.vue', '.json'],
