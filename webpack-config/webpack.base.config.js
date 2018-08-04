@@ -25,11 +25,16 @@ function requireJSON(filepath) {
 }
 
 function getEnvConf(buildInfo) {
-    const jsBuild = _.get(buildInfo, 'buildInfo.js.build')
-    const cssBuild = _.get(buildInfo, 'buildInfo.css.build')
-    const jsLocal = _.get(buildInfo, 'buildInfo.js.local', path.join(buildInfo.root, 'local'))
-    const cssLocal = _.get(buildInfo, 'buildInfo.css.local', path.join(buildInfo.root, 'local'))
+    let jsBuild = _.get(buildInfo, 'buildInfo.js.build', 'superkaola-build')
+    let cssBuild = _.get(buildInfo, 'buildInfo.css.build', jsBuild)
+    let jsLocal = _.get(buildInfo, 'buildInfo.js.local', 'superkaola-local')
+    let cssLocal = _.get(buildInfo, 'buildInfo.css.local', jsLocal)
     const publicPath = _.get(buildInfo, 'buildInfo.publicPath')
+
+    jsBuild = path.join(buildInfo.root, jsBuild)
+    jsLocal = path.join(buildInfo.root, jsLocal)
+    cssBuild = path.join(buildInfo.root, cssBuild)
+    cssLocal = path.join(buildInfo.root, cssLocal)
 
     let cssDist
     let outputPath
@@ -150,6 +155,9 @@ const getBaseConfig = (buildInfo) => {
     const commonBabelConf = buildInfo.babelConf
     const commonEntry = getCommonEntry(buildInfo)
 
+    buildInfo.html.output = buildInfo.html.output || 'index.html'
+    buildInfo.html.template = buildInfo.html.template || 'index.html'
+
     const config = {
         mode: process.env.SUPERKAOLA_ENV,
         // 占位
@@ -209,8 +217,8 @@ const getBaseConfig = (buildInfo) => {
                 chunkFilename: PROD ? '[id]_[contenthash].css' : '[id].css',
             }),
             new HtmlWebpackPlugin({
-                filename: PROD ? path.join(buildInfo.root, buildInfo.outputHtmlPath, 'index.html') : 'index.html',
-                template: path.join(buildInfo.root, buildInfo.templateHtmlPath, 'index.html'),
+                filename: PROD ? path.join(buildInfo.root, buildInfo.html.output) : 'index.html',
+                template: path.join(buildInfo.root, buildInfo.html.template),
                 inject: true,
                 minify: {
                     removeComments: true,
