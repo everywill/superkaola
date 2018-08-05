@@ -75,5 +75,8 @@
       "eslint --fix",
       "git add"
     ]
-  }
+  },
+  "engines": {
+    "node": ">=8.9.4"
+  },
 }
