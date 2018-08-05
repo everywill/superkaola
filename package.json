@@ -47,6 +47,7 @@
     "optimize-css-assets-webpack-plugin": "^5.0.0",
     "postcss-loader": "^2.1.6",
     "rimraf": "^2.6.2",
+    "saladcss-bem": "^0.0.2",
     "sass-loader": "^7.1.0",
     "uglifyjs-webpack-plugin": "^1.2.7",
     "url-loader": "^1.0.1",

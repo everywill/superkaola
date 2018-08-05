@@ -6309,6 +6309,12 @@ safe-regex@^1.1.0:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
 
+saladcss-bem@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/saladcss-bem/-/saladcss-bem-0.0.2.tgz#1a50774ca9412c4a5a075ad8604cc5bbce3f4dc2"
+  dependencies:
+    postcss "^6.0.1"
+
 sass-graph@^2.2.4:
   version "2.2.4"
   resolved "https://registry.yarnpkg.com/sass-graph/-/sass-graph-2.2.4.tgz#13fbd63cd1caf0908b9fd93476ad43a51d1e0b49"

@@ -198,20 +198,43 @@ const getBaseConfig = (buildInfo) => {
                 },
                 {
                     test: /\.(sa|sc|c)ss$/,
-                    use: [
-                        MiniCssExtractPlugin.loader,
+                    oneOf: [
                         {
-                            loader: require.resolve('css-loader'),
-                            options: { importLoaders: 1 },
-                        },
-                        {
-                            loader: require.resolve('postcss-loader'),
-                            options: buildInfo.postcss,
+                            resourceQuery: /module/,
+                            use: [
+                                MiniCssExtractPlugin.loader,
+                                {
+                                    loader: require.resolve('css-loader'),
+                                    options: {
+                                        modules: true,
+                                        localIdentName: '[local]_[hash:base64:5]',
+                                        importLoaders: 1,
+                                    },
+                                },
+                                {
+                                    loader: require.resolve('postcss-loader'),
+                                    options: buildInfo.postcss,
+                                },
+                            ],
+                        }, {
+                            use: [
+                                MiniCssExtractPlugin.loader,
+                                {
+                                    loader: require.resolve('css-loader'),
+                                    options: {
+                                        importLoaders: 1,
+                                    },
+                                },
+                                {
+                                    loader: require.resolve('postcss-loader'),
+                                    options: buildInfo.postcss,
+                                },
+                            ],
                         },
                     ],
                 },
                 {
-                    test: /\.(woff2?|eot|ttf|otf|png|gif|jpeg|jpg|svg)(\?.*)?$/,
+                    test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
                     loader: require.resolve('url-loader'),
                     options: {
                         limit: 10000,
@@ -222,6 +245,15 @@ const getBaseConfig = (buildInfo) => {
                     loader: require.resolve('url-loader'),
                     options: {
                         limit: 10000,
+                        name: 'media/[name].[hash:7].[ext]'
+                    },
+                },
+                {
+                    test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
+                    loader: require.resolve('url-loader'),
+                    options: {
+                        limit: 10000,
+                        name: 'fonts/[name].[hash:7].[ext]',
                     },
                 },
             ],
