@@ -228,7 +228,7 @@ const getBaseConfig = (buildInfo) => {
                     // https://github.com/kangax/html-minifier#options-quick-reference
                 },
                 // necessary to consistently work with multiple chunks via CommonsChunkPlugin
-                chunksSortMode: 'dependency',
+                chunksSortMode: 'none',
             }),
             new AddAssetHtmlPlugin([{
                 filepath: path.resolve(buildInfo.root, PROD ? envConf.output.outputPath : 'local', '*.dll.js'),
