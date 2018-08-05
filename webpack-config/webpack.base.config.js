@@ -152,7 +152,7 @@ function getCommonEntry(buildInfo) {
 const getBaseConfig = (buildInfo) => {
     const envConf = getEnvConf(buildInfo)
     const proBabelConf = getProBabelConf(buildInfo)
-    const commonBabelConf = buildInfo.babelConf
+    const commonBabelConf = buildInfo.babel
     const commonEntry = getCommonEntry(buildInfo)
 
     buildInfo.html.output = buildInfo.html.output || 'index.html'
@@ -174,12 +174,24 @@ const getBaseConfig = (buildInfo) => {
             rules: [
                 {
                     test: /\.vue$/,
-                    loader: 'vue-loader',
+                    loader: require.resolve('vue-loader'),
+                    options: {
+                        productionMode: PROD,
+                        transformToRequire: {
+                            video: 'src',
+                            source: 'src',
+                            img: 'src',
+                            image: 'xlink:href',
+                        },
+                    },
+
                 },
                 {
                     test: /\.js$/,
-                    loader: 'happypack/loader?id=babel',
+                    use: `${require.resolve('happypack/loader')}?id=babel`,
                     exclude: file => (
+                        !/node_modules\/element-ui\/packages/.test(file) &&
+                        !/node_modules\/element-ui\/src/.test(file) &&
                         /node_modules/.test(file) &&
                         !/\.vue\.js/.test(file)
                     ),
@@ -188,13 +200,26 @@ const getBaseConfig = (buildInfo) => {
                     test: /\.(sa|sc|c)ss$/,
                     use: [
                         MiniCssExtractPlugin.loader,
-                        'css-loader',
-                        'sass-loader',
+                        {
+                            loader: require.resolve('css-loader'),
+                            options: { importLoaders: 1 },
+                        },
+                        {
+                            loader: require.resolve('postcss-loader'),
+                            options: buildInfo.postcss,
+                        },
                     ],
                 },
                 {
                     test: /\.(woff2?|eot|ttf|otf|png|gif|jpeg|jpg|svg)(\?.*)?$/,
-                    loader: 'url-loader',
+                    loader: require.resolve('url-loader'),
+                    options: {
+                        limit: 10000,
+                    },
+                },
+                {
+                    test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
+                    loader: require.resolve('url-loader'),
                     options: {
                         limit: 10000,
                     },
@@ -203,7 +228,6 @@ const getBaseConfig = (buildInfo) => {
         },
         plugins: [
             new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-            new VueLoaderPlugin(),
             new HappyPack({
                 id: 'babel',
                 threadPool: happyThreadPool,
@@ -212,6 +236,7 @@ const getBaseConfig = (buildInfo) => {
                     options: babelMerge(commonBabelConf, proBabelConf),
                 }],
             }),
+            new VueLoaderPlugin(),
             new MiniCssExtractPlugin({
                 filename: PROD ? '[name]_[contenthash].css' : '[name].css',
                 chunkFilename: PROD ? '[id]_[contenthash].css' : '[id].css',

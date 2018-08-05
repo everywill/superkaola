@@ -17,7 +17,7 @@ const getWebpackConfig = (buildInfo) => {
     })
 
     Object.keys(wbpConfig.entry).forEach((name) => {
-        wbpConfig.entry[name] = [`webpack-hot-middleware/client?path=/${config.HMR_PATH}&quiet=true`].concat(wbpConfig.entry[name]);
+        wbpConfig.entry[name] = [`${require.resolve('webpack-hot-middleware/client')}?path=/${config.HMR_PATH}&quiet=true`].concat(wbpConfig.entry[name]);
     })
 
     return wbpConfig
