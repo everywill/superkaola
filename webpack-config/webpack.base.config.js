@@ -324,7 +324,7 @@ const getBaseConfig = (buildInfo) => {
     if (buildInfo.needDll) {
         config.plugins.push(new webpack.DllReferencePlugin({
             context: path.join(buildInfo.root, 'node_modules', '.super-kaola'),
-            manifest: require(path.join(buildInfo, 'node_modules', '.super-kaola', 'base-manifest.json')),
+            manifest: require(path.join(buildInfo.root, 'node_modules', '.super-kaola', 'base-manifest.json')),
         }))
     }
 
