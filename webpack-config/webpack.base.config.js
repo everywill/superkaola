@@ -25,11 +25,11 @@ function requireJSON(filepath) {
 }
 
 function getEnvConf(buildInfo) {
-    let jsBuild = _.get(buildInfo, 'buildInfo.js.build', 'superkaola-build')
-    let cssBuild = _.get(buildInfo, 'buildInfo.css.build', jsBuild)
-    let jsLocal = _.get(buildInfo, 'buildInfo.js.local', 'superkaola-local')
-    let cssLocal = _.get(buildInfo, 'buildInfo.css.local', jsLocal)
-    const publicPath = _.get(buildInfo, 'buildInfo.publicPath')
+    let jsBuild = _.get(buildInfo, 'js.build', 'superkaola-build')
+    let jsLocal = _.get(buildInfo, 'js.local', 'superkaola-local')
+    let cssBuild = _.get(buildInfo, 'css.build', jsBuild)
+    let cssLocal = _.get(buildInfo, 'css.local', jsLocal)
+    const publicPath = _.get(buildInfo, 'publicPath')
 
     jsBuild = path.join(buildInfo.root, jsBuild)
     jsLocal = path.join(buildInfo.root, jsLocal)
@@ -288,10 +288,10 @@ const getBaseConfig = (buildInfo) => {
                 chunksSortMode: 'none',
             }),
             new AddAssetHtmlPlugin([{
-                filepath: path.resolve(buildInfo.root, PROD ? envConf.output.outputPath : 'local', '*.dll.js'),
+                filepath: path.resolve(buildInfo.root, PROD ? envConf.output.path : 'local', '*.dll.js'),
                 includeSourcemap: false,
             }, {
-                filepath: path.resolve(buildInfo.root, PROD ? envConf.output.outputPath : 'local', '*.dll.css'),
+                filepath: path.resolve(buildInfo.root, PROD ? envConf.output.path : 'local', '*.dll.css'),
                 includeSourcemap: false,
                 typeOfAsset: 'css',
             }]),
