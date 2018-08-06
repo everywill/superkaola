@@ -12,7 +12,7 @@ const envMap = {
     analyze: 'production',
 }
 
-const build = (type, statsDir) => {
+const build = (type, statsDir, options) => {
     type = type || 'dev' // eslint-disable-line
 
     process.env.SUPERKAOLA_ENV = envMap[type]
@@ -38,7 +38,7 @@ const build = (type, statsDir) => {
     })
 
     dllPromise.then((needDll) => {
-        buildBusiness(proBuildInfo, needDll, statsDir);
+        buildBusiness(proBuildInfo, needDll, statsDir, options);
     })
 }
 
