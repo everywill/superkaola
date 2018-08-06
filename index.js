@@ -6,7 +6,7 @@ const init = require('./bin/init')
 const build = require('./bin/build')
 const upgrade = require('./bin/upgrade')
 
-const buildAction = type => options => build(type, options)
+const buildAction = type => options => build(type, undefined, options)
 
 program
     .version(pkg.version, '-v, --version')
