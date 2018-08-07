@@ -7,8 +7,6 @@ const webpack = require('webpack')
 const babelMerge = require('babel-merge')
 const HappyPack = require('happypack')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
 const cs = require('../lib/console')
@@ -273,28 +271,6 @@ const getBaseConfig = (buildInfo) => {
                 filename: PROD ? '[name]_[contenthash].css' : '[name].css',
                 chunkFilename: PROD ? '[id]_[contenthash].css' : '[id].css',
             }),
-            new HtmlWebpackPlugin({
-                filename: PROD ? path.join(buildInfo.root, buildInfo.html.output) : 'index.html',
-                template: path.join(buildInfo.root, buildInfo.html.template),
-                inject: true,
-                minify: {
-                    removeComments: true,
-                    collapseWhitespace: true,
-                    removeAttributeQuotes: true,
-                    // more options:
-                    // https://github.com/kangax/html-minifier#options-quick-reference
-                },
-                // necessary to consistently work with multiple chunks via CommonsChunkPlugin
-                chunksSortMode: 'none',
-            }),
-            new AddAssetHtmlPlugin([{
-                filepath: path.resolve(buildInfo.root, PROD ? envConf.output.path : 'local', '*.dll.js'),
-                includeSourcemap: false,
-            }, {
-                filepath: path.resolve(buildInfo.root, PROD ? envConf.output.path : 'local', '*.dll.css'),
-                includeSourcemap: false,
-                typeOfAsset: 'css',
-            }]),
             new webpack.ProgressPlugin((percentage, msg) => {
                 if (percentage < 1) {
                     percentage = Math.floor(percentage * 100);
@@ -307,18 +283,6 @@ const getBaseConfig = (buildInfo) => {
                 }
             }),
         ],
-        optimization: {
-            runtimeChunk: 'single',
-            splitChunks: {
-                chunks: 'all',
-                name: true,
-                cacheGroups: {
-                    vendors: {
-                        test: /[\\/]node_modules[\\/]/,
-                    },
-                },
-            },
-        },
     }
 
     if (buildInfo.needDll) {

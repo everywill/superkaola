@@ -16,6 +16,18 @@ const getWebpackConfig = (buildInfo) => {
             filename: PROD ? '[name]_[chunkhash].dll.js' : '[name].dll.js',
             library: PROD ? '[name]_[chunkhash]' : '[name]',
         },
+        optimization: {
+            runtimeChunk: 'single',
+            splitChunks: {
+                chunks: 'async',
+                name: true,
+                cacheGroups: {
+                    vendors: {
+                        test: /[\\/]node_modules[\\/]/,
+                    },
+                },
+            },
+        },
     })
 
     config.plugins = config.plugins.concat([
