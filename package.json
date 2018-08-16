@@ -1,6 +1,6 @@
 {
   "name": "superkaola",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Super bundler for kaola front-end project.",
   "main": "index.js",
   "bin": {
