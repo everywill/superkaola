@@ -7,7 +7,7 @@
     "superkaola": "./index.js"
   },
   "scripts": {
-    "postversion": "git push && git push --tags"
+    "postversion": "git push --tags"
   },
   "repository": {
     "type": "git",
@@ -44,13 +44,11 @@
     "http-proxy-middleware": "^0.18.0",
     "lodash": "^4.17.10",
     "mini-css-extract-plugin": "^0.4.0",
-    "node-sass": "^4.9.2",
     "optimize-css-assets-webpack-plugin": "^5.0.0",
     "postcss-loader": "^2.1.6",
     "postcss-nested": "^3.0.0",
     "rimraf": "^2.6.2",
     "saladcss-bem": "^0.0.2",
-    "sass-loader": "^7.1.0",
     "uglifyjs-webpack-plugin": "^1.2.7",
     "url-loader": "^1.0.1",
     "vue-loader": "^15.2.4",
