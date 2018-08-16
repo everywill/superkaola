@@ -7,7 +7,7 @@
     "superkaola": "./index.js"
   },
   "scripts": {
-    "postversion": "git push --tags"
+    "postversion": "git push && git push --tags"
   },
   "repository": {
     "type": "git",
