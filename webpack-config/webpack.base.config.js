@@ -71,6 +71,9 @@ function getProBabelConf(buildInfo) {
 }
 
 function scanJs(entry) {
+    if (fs.statSync(entry).isFile()) {
+        return [entry]
+    }
     const files = glob.sync('/**/main.js*', {
         root: entry,
         ignore: [
