@@ -30,10 +30,10 @@ npx superkaola prd
 ```
 
 ## TODO
-* [] add support for js format of configuration file
-* [] new feature: superkaola cdn, upload files to cdn
-* [] new feature: superkaola upgrade, upgrade superkaola.json when new configuration item is introduced.
-* [] add support for ssr
-* [] provide an api for hot-reload out of superkaola
+* [ ] add support for js format of configuration file
+* [ ] new feature: superkaola cdn, upload files to cdn
+* [ ] new feature: superkaola upgrade, upgrade superkaola.json when new configuration item is introduced.
+* [ ] add support for ssr
+* [ ] provide an api for hot-reload out of superkaola
 
 
