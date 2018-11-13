@@ -28,7 +28,6 @@ program
 program
     .command('dev')
     .description('开发环境打包')
-    .option('-p, --proxy [proxy]', '指定proxyTable中存在的代理，支持直接ip指定')
     .action(buildAction('dev'))
 program
     .command('prd')
