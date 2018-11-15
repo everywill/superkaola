@@ -3,6 +3,7 @@
     "rules": {
         "semi": "off",
         "no-console": "off",
-        "indent": ["error", 4]
+        "indent": ["error", 4],
+        "no-param-reassign": "off"
     }
 }

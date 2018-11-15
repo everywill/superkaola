@@ -198,7 +198,7 @@ const getBaseConfig = (buildInfo) => {
                     ),
                 },
                 {
-                    test: /\.(sa|sc|c)ss$/,
+                    test: /\.css$/,
                     oneOf: [
                         {
                             resourceQuery: /module/,
@@ -229,6 +229,49 @@ const getBaseConfig = (buildInfo) => {
                                 {
                                     loader: require.resolve('postcss-loader'),
                                     options: buildInfo.postcss,
+                                },
+                            ],
+                        },
+                    ],
+                },
+                {
+                    test: /\.(sa|sc)ss$/,
+                    oneOf: [
+                        {
+                            resourceQuery: /module/,
+                            use: [
+                                MiniCssExtractPlugin.loader,
+                                {
+                                    loader: require.resolve('css-loader'),
+                                    options: {
+                                        modules: true,
+                                        localIdentName: '[local]_[hash:base64:5]',
+                                        importLoaders: 1,
+                                    },
+                                },
+                                {
+                                    loader: require.resolve('postcss-loader'),
+                                    options: buildInfo.postcss,
+                                },
+                                {
+                                    loader: require.resolve('sass-loader'),
+                                },
+                            ],
+                        }, {
+                            use: [
+                                MiniCssExtractPlugin.loader,
+                                {
+                                    loader: require.resolve('css-loader'),
+                                    options: {
+                                        importLoaders: 1,
+                                    },
+                                },
+                                {
+                                    loader: require.resolve('postcss-loader'),
+                                    options: buildInfo.postcss,
+                                },
+                                {
+                                    loader: require.resolve('sass-loader'),
                                 },
                             ],
                         },

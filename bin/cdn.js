@@ -2,7 +2,7 @@ const { spawn } = require('child_process');
 const chalk = require('chalk');
 
 function cdn() {
-    const params = process.argv.slice(2);
+    const params = process.argv.slice(3);
 
     const cmd = spawn('superkaola-cdn', params, {
         stdio: 'inherit',
